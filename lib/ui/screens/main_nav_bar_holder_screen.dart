@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/screens/new_task_screen.dart';
 import 'package:task_manager/ui/screens/progress_screen.dart';
-
 import 'cancel_screen.dart';
 import 'completed_screen.dart';
+
+
+
 
 class MainNavBarHolderScreen extends StatefulWidget {
   const MainNavBarHolderScreen({super.key});
@@ -18,7 +20,7 @@ class _MainNavBarHolderScreenState extends State<MainNavBarHolderScreen> {
     NewTaskScreen(),
     ProgressScreen(),
     CompletedScreen(),
-    CancelScreen(),
+    CancelledScreen(),
   ];
 
   @override
