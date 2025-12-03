@@ -36,6 +36,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_svg: ^2.2.3
   pin_code_fields: ^8.0.1
+  image_picker: ^1.2.1
+  flutter_plugin_android_lifecycle: any
 
 
 dev_dependencies:
