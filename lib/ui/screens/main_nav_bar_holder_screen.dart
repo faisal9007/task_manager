@@ -1,0 +1,56 @@
+import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/new_task_screen.dart';
+import 'package:task_manager/ui/screens/progress_screen.dart';
+
+import 'cancel_screen.dart';
+import 'completed_screen.dart';
+
+class MainNavBarHolderScreen extends StatefulWidget {
+  const MainNavBarHolderScreen({super.key});
+
+  @override
+  State<MainNavBarHolderScreen> createState() => _MainNavBarHolderScreenState();
+}
+
+class _MainNavBarHolderScreenState extends State<MainNavBarHolderScreen> {
+  int _selectedIndex = 0;
+  List<Widget> _screens = [
+    NewTaskScreen(),
+    ProgressScreen(),
+    CompletedScreen(),
+    CancelScreen(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: NavigationBar(
+        selectedIndex: _selectedIndex,
+        onDestinationSelected: (int index) {
+          _selectedIndex = index;
+          setState(() {
+
+          });
+        },
+        backgroundColor: Colors.grey,
+        indicatorColor: Colors.brown,
+        destinations: [
+          NavigationDestination(
+            icon: Icon(Icons.add_box_rounded),
+            label: 'New Task',
+          ),
+          NavigationDestination(icon: Icon(Icons.bar_chart), label: 'Progress'),
+          NavigationDestination(
+            icon: Icon(Icons.done_all_outlined),
+            label: 'Completed',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.cancel_rounded),
+            label: 'Cancel',
+          ),
+        ],
+      ),
+    );
+  }
+}
