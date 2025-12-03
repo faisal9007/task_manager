@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../widgets/TaskCard.dart';
 import '../widgets/task_aap_bar.dart';
 import '../widgets/task_count.dart';
+import 'add_new_task_screen.dart';
 
 class NewTaskScreen extends StatefulWidget {
   const NewTaskScreen({super.key});
@@ -15,7 +16,6 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: TMApp_bar(),
       body: Column(
         children: [
@@ -39,17 +39,22 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
           Expanded(
             child: ListView.separated(
               itemCount: 10,
-                itemBuilder:(context,index){
+              itemBuilder: (context, index) {
                 return TaskCard();
-                } , separatorBuilder: (context,index){
-                return SizedBox(height: 4,);
-            }, ),
+              },
+              separatorBuilder: (context, index) {
+                return SizedBox(height: 4);
+              },
+            ),
           ),
-
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context,MaterialPageRoute(builder: (context)=>AddNewTaskScreen()));
+        },
+        child: Icon(Icons.add),
       ),
     );
   }
 }
-
-
