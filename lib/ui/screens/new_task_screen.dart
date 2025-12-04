@@ -40,7 +40,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
             child: ListView.separated(
               itemCount: 10,
               itemBuilder: (context, index) {
-                return TaskCard();
+                return TaskCard(status: 'New', cardColor: Colors.blueAccent);
               },
               separatorBuilder: (context, index) {
                 return SizedBox(height: 4);
@@ -51,7 +51,10 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.push(context,MaterialPageRoute(builder: (context)=>AddNewTaskScreen()));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddNewTaskScreen()),
+          );
         },
         child: Icon(Icons.add),
       ),

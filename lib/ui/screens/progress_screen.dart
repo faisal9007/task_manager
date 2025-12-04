@@ -15,41 +15,19 @@ class _ProgressScreenState extends State<ProgressScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       appBar: TMApp_bar(),
-      body: Column(
-        children: [
-          SizedBox(height: 15),
-          SizedBox(
-            height: 90,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2.0),
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  return TaskCount(title: 'Progress', count: index + 5);
-                },
-                separatorBuilder: (context, index) {
-                  return SizedBox(width: 1);
-                },
-              ),
-            ),
-          ),
-          Expanded(
-            child: ListView.separated(
-              itemCount: 10,
-              itemBuilder:(context,index){
-                return TaskCard();
-              } , separatorBuilder: (context,index){
-              return SizedBox(height: 4,);
-            }, ),
-          ),
-
-        ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+        child: ListView.separated(
+          itemBuilder: (context, index) {
+            return TaskCard(status: 'Progress', cardColor: Colors.purpleAccent);
+          },
+          separatorBuilder: (context, index) {
+            return SizedBox(height: 10);
+          },
+          itemCount: 10,
+        ),
       ),
     );
   }
 }
-
-
