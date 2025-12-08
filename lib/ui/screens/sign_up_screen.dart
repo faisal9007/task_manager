@@ -22,31 +22,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _signUpInProgress = false;
-  Future<void> _signUp() async {
-    setState(() {
-      _signUpInProgress = true;
-    });
-    Map<String, dynamic> requestBody = {
-      "email": _emailController.text,
-      "firstName": _firstNameController.text,
-      "lastName": _lastNameController.text,
-      "mobile": _mobileController.text,
-      "password": _passwordController.text,
-    };
-    final ApiResponse response = await ApiCaller.postRequest(
-      url: Urls.registrationUrls,
-      body: requestBody,
-    );
-    if (response.isSuccess) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('SignUp Successful..!'),
-          backgroundColor: Colors.green,
-          duration: Duration(seconds: 2),
-        ),
-      );
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -147,13 +122,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     },
                   ),
                   const SizedBox(height: 16),
-                  FilledButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _signUp();
-                      }
-                    },
-                    child: Icon(Icons.double_arrow_outlined, size: 30),
+                  Visibility(
+                    visible: !_signUpInProgress,
+                    replacement: Center(child: CircularProgressIndicator()),
+                    child: FilledButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _signUp();
+                        }
+                      },
+                      child: Icon(Icons.double_arrow_outlined, size: 30),
+                    ),
                   ),
 
                   const SizedBox(height: 35),
@@ -190,5 +169,64 @@ class _SignUpScreenState extends State<SignUpScreen> {
         ),
       ),
     );
+  }
+
+  _clearTextField() {
+    _emailController.clear();
+    _firstNameController.clear();
+    _lastNameController.clear();
+    _mobileController.clear();
+    _passwordController.clear();
+  }
+
+  Future<void> _signUp() async {
+    setState(() {
+      _signUpInProgress = true;
+    });
+    Map<String, dynamic> requestBody = {
+      "email": _emailController.text,
+      "firstName": _firstNameController.text,
+      "lastName": _lastNameController.text,
+      "mobile": _mobileController.text,
+      "password": _passwordController.text,
+    };
+    final ApiResponse response = await ApiCaller.postRequest(
+      url: Urls.registrationUrls,
+      body: requestBody,
+    );
+    setState(() {
+      _signUpInProgress = false;
+    });
+    if (response.isSuccess) {
+      _clearTextField();
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'SignUp Successful..!',
+            style: TextStyle(color: Colors.brown),
+          ),
+          backgroundColor: Colors.grey,
+          duration: Duration(seconds: 5),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(response.responseData['data']),
+          backgroundColor: Colors.red,
+          duration: Duration(seconds: 5),
+        ),
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _firstNameController.dispose();
+    _lastNameController.dispose();
+    _mobileController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 }
