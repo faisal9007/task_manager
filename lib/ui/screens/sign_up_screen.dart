@@ -1,5 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/services/api_caller.dart';
+import 'package:task_manager/data/utils/urls.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
 import 'forget_password_varify_otp.dart';
@@ -19,6 +21,32 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final TextEditingController _mobileController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  bool _signUpInProgress = false;
+  Future<void> _signUp() async {
+    setState(() {
+      _signUpInProgress = true;
+    });
+    Map<String, dynamic> requestBody = {
+      "email": _emailController.text,
+      "firstName": _firstNameController.text,
+      "lastName": _lastNameController.text,
+      "mobile": _mobileController.text,
+      "password": _passwordController.text,
+    };
+    final ApiResponse response = await ApiCaller.postRequest(
+      url: Urls.registrationUrls,
+      body: requestBody,
+    );
+    if (response.isSuccess) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('SignUp Successful..!'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +149,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   const SizedBox(height: 16),
                   FilledButton(
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {}
+                      if (_formKey.currentState!.validate()) {
+                        _signUp();
+                      }
                     },
                     child: Icon(Icons.double_arrow_outlined, size: 30),
                   ),
