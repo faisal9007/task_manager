@@ -2,8 +2,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/screens/sign_up_screen.dart';
 
+import '../../data/models/user_model.dart';
 import '../../data/services/api_caller.dart';
 import '../../data/utils/urls.dart';
+import '../controller/auth_controller.dart';
 import '../widgets/screen_background.dart';
 import 'forget_password_email_varify.dart';
 import 'main_nav_bar_holder_screen.dart';
@@ -157,6 +159,9 @@ class _LoginPageState extends State<LoginPage> {
       _signInProgress = false;
     });
     if (response.isSuccess) {
+      UserModel model = UserModel.fromJson(response.responseData['data']);
+      String accessToken = response.responseData['token'];
+      await AuthController.saveUserData(model, accessToken);
       _clearTextField();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -168,6 +173,7 @@ class _LoginPageState extends State<LoginPage> {
           duration: Duration(seconds: 5),
         ),
       );
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => MainNavBarHolderScreen()),
