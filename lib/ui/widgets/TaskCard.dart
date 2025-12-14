@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/models/task_model.dart';
 
 class TaskCard extends StatelessWidget {
-  const TaskCard({super.key, required this.status, required this.cardColor});
+  const TaskCard({
+    super.key,
+    required this.cardColor,
+    required this.taskModel,
+    required this.refreshParent,
+  });
 
-  final String status;
+  final TaskModel taskModel;
   final Color cardColor;
+  final VoidCallback refreshParent;
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -17,7 +24,7 @@ class TaskCard extends StatelessWidget {
             borderRadius: BorderRadiusGeometry.circular(8),
           ),
           title: Text(
-            'This is Task Title',
+            taskModel.title,
             style: Theme.of(
               context,
             ).textTheme.titleLarge!.copyWith(fontSize: 18),
@@ -25,12 +32,12 @@ class TaskCard extends StatelessWidget {
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('This is Description'),
-              Text('23/9/25'),
+              Text(taskModel.description),
+              Text('Date:${taskModel.createdDate}'),
               Row(
                 children: [
                   Chip(
-                    label: Text(status),
+                    label: Text(taskModel.status),
                     backgroundColor: cardColor,
                     labelStyle: TextStyle(color: Colors.white),
                     padding: EdgeInsets.symmetric(horizontal: 20),

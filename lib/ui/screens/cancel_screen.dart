@@ -20,7 +20,8 @@ class _CancelledScreenState extends State<CancelledScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: ListView.separated(
           itemBuilder: (context, index) {
-            return TaskCard(status: 'Canceled', cardColor: Colors.red.shade400);
+            //return TaskCard(status: 'Canceled', cardColor: Colors.red.shade400);
+            return Text('');
           },
           separatorBuilder: (context, index) {
             return SizedBox(height: 10);

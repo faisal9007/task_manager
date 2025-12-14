@@ -20,10 +20,11 @@ class _CompletedScreenState extends State<CompletedScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: ListView.separated(
           itemBuilder: (context, index) {
-            return TaskCard(
-              status: 'Completed',
-              cardColor: Colors.green.shade600,
-            );
+            // return TaskCard(
+            //               status: 'Completed',
+            //               cardColor: Colors.green.shade600,
+            //             );
+            return Text('');
           },
           separatorBuilder: (context, index) {
             return SizedBox(height: 10);

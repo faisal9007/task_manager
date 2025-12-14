@@ -3,4 +3,7 @@ class Urls {
   static String registrationUrls = "$_baseUrl/registration";
   static String loginUrls = "$_baseUrl/login";
   static String createTaskUrls = "$_baseUrl/createTask";
+  static String taskCountUrls = "$_baseUrl/taskStatusCount";
+  static String newTaskUrls = "$_baseUrl/listTaskByStatus/New";
+  static String taskListUrls(String type) => "$_baseUrl/listTaskByStatus/$type";
 }
