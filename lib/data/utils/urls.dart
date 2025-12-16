@@ -6,4 +6,6 @@ class Urls {
   static String taskCountUrls = "$_baseUrl/taskStatusCount";
   static String newTaskUrls = "$_baseUrl/listTaskByStatus/New";
   static String taskListUrls(String type) => "$_baseUrl/listTaskByStatus/$type";
+  static String changeStatus(String taskId, String status) =>
+      "$_baseUrl/updateTaskStatus/$taskId/$status";
 }
