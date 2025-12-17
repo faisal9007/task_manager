@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:task_manager/data/models/user_model.dart';
+import 'package:task_manager/ui/controller/auth_controller.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
 
@@ -14,9 +16,21 @@ class UpdateProfileScreen extends StatefulWidget {
 }
 
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
+  TextEditingController  emailController = TextEditingController();
+  TextEditingController  firstNameController = TextEditingController();
+  TextEditingController  lastNameController = TextEditingController();
+  TextEditingController  mobileController = TextEditingController();
+  TextEditingController  passwordController = TextEditingController();
+
   final ImagePicker _imagePicker = ImagePicker();
 
   XFile? _selectedImage;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    UserModel user = AuthController.userModel!;
+  }
 
   Future<void> _pickImage() async {
     final XFile? image =
@@ -57,30 +71,35 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                 height: 15,
               ),
               TextFormField(
+                controller: emailController,
                 decoration: InputDecoration(hintText: 'Email'),
               ),
               SizedBox(
                 height: 15,
               ),
               TextFormField(
+                controller: firstNameController,
                 decoration: InputDecoration(hintText: 'First name'),
               ),
               const SizedBox(
                 height: 16,
               ),
               TextFormField(
+                controller: lastNameController,
                 decoration: InputDecoration(hintText: 'Last name'),
               ),
               SizedBox(
                 height: 15,
               ),
               TextFormField(
+                controller: mobileController,
                 decoration: InputDecoration(hintText: 'Mobile'),
               ),
               const SizedBox(
                 height: 16,
               ),
               TextFormField(
+                controller: passwordController,
                 decoration: InputDecoration(hintText: 'Password'),
               ),
               const SizedBox(
