@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../../data/models/task_model.dart';
+import '../../data/services/api_caller.dart';
+import '../../data/utils/urls.dart';
 import '../widgets/TaskCard.dart';
+import '../widgets/show_snack_bar_message.dart';
 import '../widgets/task_aap_bar.dart';
 import '../widgets/task_count.dart';
 
@@ -12,6 +16,35 @@ class ProgressScreen extends StatefulWidget {
 }
 
 class _ProgressScreenState extends State<ProgressScreen> {
+  List<TaskModel> _progressTaskList = [];
+  bool _getProgressTaskProgress = false;
+  Future<void> _getAllTask() async {
+    _getProgressTaskProgress = true;
+    setState(() {});
+    final ApiResponse response = await ApiCaller.getRequest(
+      url: Urls.progressTaskUrls,
+    );
+    _getProgressTaskProgress = false;
+    setState(() {});
+    List<TaskModel> list = [];
+
+    if (response.isSuccess) {
+      for (Map<String, dynamic> jsonData in response.responseData['data']) {
+        list.add(TaskModel.fromJson(jsonData));
+      }
+    } else {
+      showSnackBarMessage(context, response.errorMessage.toString());
+    }
+    _progressTaskList = list;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _getAllTask();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,14 +52,19 @@ class _ProgressScreenState extends State<ProgressScreen> {
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10.0),
         child: ListView.separated(
+          itemCount: _progressTaskList.length,
           itemBuilder: (context, index) {
-            return Text('');
-            //return TaskCard(status: 'Progress', cardColor: Colors.purpleAccent);
+            return TaskCard(
+              taskModel: _progressTaskList[index],
+              cardColor: Colors.blueAccent,
+              refreshParent: () {
+                _getAllTask();
+              },
+            );
           },
           separatorBuilder: (context, index) {
-            return SizedBox(height: 10);
+            return SizedBox(height: 4);
           },
-          itemCount: 10,
         ),
       ),
     );

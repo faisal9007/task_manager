@@ -23,6 +23,7 @@ class TaskCard extends StatefulWidget {
 
 class _TaskCardState extends State<TaskCard> {
   bool _changeStatusInProgress = false;
+  bool _deleteLoading = false;
   Future<void> _changeStatus(String status) async {
     _changeStatusInProgress = true;
     setState(() {});
@@ -35,6 +36,22 @@ class _TaskCardState extends State<TaskCard> {
     if (response.isSuccess) {
       widget.refreshParent();
       Navigator.pop(context);
+    } else {
+      showSnackBarMessage(context, response.errorMessage.toString());
+    }
+  }
+
+  Future<void> deleteTask() async {
+    _deleteLoading = true;
+    setState(() {});
+    final ApiResponse response = await ApiCaller.getRequest(
+      url: Urls.deleteTaskUrls(widget.taskModel.id),
+    );
+    _deleteLoading = false;
+    setState(() {});
+    if (response.isSuccess) {
+      widget.refreshParent();
+      showSnackBarMessage(context, 'Task Deleted');
     } else {
       showSnackBarMessage(context, response.errorMessage.toString());
     }
@@ -133,7 +150,9 @@ class _TaskCardState extends State<TaskCard> {
                     icon: Icon(Icons.edit, color: Colors.green),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      deleteTask();
+                    },
                     icon: Icon(Icons.delete, color: Colors.red),
                   ),
                 ],

@@ -103,7 +103,10 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
                 return TaskCard(
                   taskModel: _newTaskList[index],
                   cardColor: Colors.blueAccent,
-                  refreshParent: () {},
+                  refreshParent: () {
+                    _getAllNewTask();
+                    _getAllTaskCount();
+                  },
                 );
               },
               separatorBuilder: (context, index) {

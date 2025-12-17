@@ -94,6 +94,11 @@ class _AddNewTaskScreenState extends State<AddNewTaskScreen> {
     setState(() {});
     if (response.isSuccess) {
       _clearField();
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/Main Navigation',
+        (predicate) => false,
+      );
       showSnackBarMessage(context, 'New Task Added');
     } else {
       showSnackBarMessage(context, response.errorMessage!);
