@@ -30,6 +30,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     // TODO: implement initState
     super.initState();
     UserModel user = AuthController.userModel!;
+    emailController.text=user.email;
+    firstNameController.text=user.firstName;
+    lastNameController.text=user.lastName;
+    mobileController.text=user.mobile;
+
+
   }
 
   Future<void> _pickImage() async {
