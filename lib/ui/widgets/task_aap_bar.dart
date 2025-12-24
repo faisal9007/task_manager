@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/controller/auth_controller.dart';
 
@@ -8,6 +10,7 @@ class TMApp_bar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    final profilePhoto =AuthController.userModel!.photo;
     return AppBar(
       backgroundColor: Colors.brown,
       title: InkWell(
@@ -19,19 +22,19 @@ class TMApp_bar extends StatelessWidget implements PreferredSizeWidget {
         },
         child: Row(
           children: [
-            CircleAvatar(radius: 25),
+            CircleAvatar(child: profilePhoto.isNotEmpty? Image.memory(jsonDecode(profilePhoto)): Icon(Icons.person),radius: 25),
             SizedBox(width: 8),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Faisal Murad',
+                  '${AuthController.userModel!.firstName} ${AuthController.userModel!.lastName}',
                   style: Theme.of(
                     context,
                   ).textTheme.titleSmall?.copyWith(color: Colors.white),
                 ),
                 Text(
-                  'ofaisal9007@gmail.com',
+                  AuthController.userModel!.email,
                   style: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.copyWith(color: Colors.white),

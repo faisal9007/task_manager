@@ -56,7 +56,7 @@ class _CancelledScreenState extends State<CancelledScreen> {
           itemBuilder: (context, index) {
             return TaskCard(
               taskModel: _cancelledTaskList[index],
-              cardColor: Colors.blueAccent,
+              cardColor: Colors.redAccent,
               refreshParent: () {
                 _getAllTask();
               },

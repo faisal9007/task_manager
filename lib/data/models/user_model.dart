@@ -22,7 +22,7 @@ class UserModel {
       firstName: jsonData['firstName'],
       lastName: jsonData['lastName'],
       mobile: jsonData['mobile'],
-      photo: jsonData['mobile'] ?? '',
+      photo: jsonData['photo'] ?? '',
     );
   }
 
@@ -33,6 +33,7 @@ class UserModel {
       "firstName": firstName,
       "lastName": lastName,
       "mobile": mobile,
+      "photo": photo,
     };
   }
 }
