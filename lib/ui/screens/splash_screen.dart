@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
+import 'package:task_manager/provider/auth_provider.dart';
 import 'package:task_manager/ui/controller/auth_controller.dart';
 import 'package:task_manager/ui/utils/assets_path.dart';
 
@@ -26,9 +28,9 @@ class _SplashScreenState extends State<SplashScreen> {
 
   Future<void> _moveToNextScreen() async {
     await Future.delayed(const Duration(seconds: 3));
-    await AuthController.getUserData();
-    final bool isLoggedIn = await AuthController.isUserLoggedIn();
-    if (isLoggedIn) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    authProvider.loadUserData();
+    if (authProvider.isLoggedIn) {
       Navigator.pushReplacementNamed(context, '/Main Navigation');
     } else {
       Navigator.pushReplacement(
