@@ -1,5 +1,8 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:task_manager/provider/auth_provider.dart';
+import 'package:task_manager/provider/network_provider.dart';
 import 'package:task_manager/ui/screens/sign_up_screen.dart';
 
 import '../../data/models/user_model.dart';
@@ -143,25 +146,12 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _signIn() async {
-    setState(() {
-      _signInProgress = true;
-    });
-    Map<String, dynamic> requestBody = {
-      "email": _emailController.text,
+    final networkProvider = Provider.of<NetworkProvider>(context, listen: false);
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-      "password": _passwordController.text,
-    };
-    final ApiResponse response = await ApiCaller.postRequest(
-      url: Urls.loginUrls,
-      body: requestBody,
-    );
-    setState(() {
-      _signInProgress = false;
-    });
-    if (response.isSuccess) {
-      UserModel model = UserModel.fromJson(response.responseData['data']);
-      String accessToken = response.responseData['token'];
-      await AuthController.saveUserData(model, accessToken);
+    final result =await networkProvider.login(email: _emailController.text.trim(), password: _passwordController.text);
+    if (result != null ){
+      await authProvider.saveUserData(result['user'],(result['token']));
       _clearTextField();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -178,10 +168,13 @@ class _LoginPageState extends State<LoginPage> {
         context,
         MaterialPageRoute(builder: (context) => MainNavBarHolderScreen()),
       );
+
+
+
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(response.responseData['data']),
+          content: Text(networkProvider.errorMessage?? "Something Wrong"),
           backgroundColor: Colors.red,
           duration: Duration(seconds: 5),
         ),
