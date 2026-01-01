@@ -57,7 +57,7 @@ static Future<bool> checkLoginStatus() async {
   return token != null;
 }
 
- Future<void> loginIn() async {
+ Future<void> logout() async {
   SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
   await sharedPreferences.clear();
   _accessToken = null;

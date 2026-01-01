@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:task_manager/data/models/task_model.dart';
 import 'package:task_manager/data/services/api_caller.dart';
 import 'package:task_manager/data/utils/urls.dart';
+import 'package:task_manager/provider/task_provider.dart';
 import 'package:task_manager/ui/widgets/show_snack_bar_message.dart';
 
 import '../../data/models/task_status_count_model.dart';
@@ -18,28 +20,14 @@ class NewTaskScreen extends StatefulWidget {
 }
 
 class _NewTaskScreenState extends State<NewTaskScreen> {
-  bool _getTaskStatusCountProgress = false;
-  bool _getNewTaskProgress = false;
-  List<TaskStatusCountModel> _taskStatusCountList = [];
-  List<TaskModel> _newTaskList = [];
-  Future<void> _getAllTaskCount() async {
-    _getTaskStatusCountProgress = true;
-    setState(() {});
-    final ApiResponse response = await ApiCaller.getRequest(
-      url: Urls.taskCountUrls,
-    );
-    _getTaskStatusCountProgress = false;
-    setState(() {});
-    List<TaskStatusCountModel> list = [];
 
-    if (response.isSuccess) {
-      for (Map<String, dynamic> jsonData in response.responseData['data']) {
-        list.add(TaskStatusCountModel.formJson(jsonData));
-      }
-    } else {
-      showSnackBarMessage(context, response.errorMessage.toString());
-    }
-    _taskStatusCountList = list;
+  bool _getNewTaskProgress = false;
+
+  List<TaskModel> _newTaskList = [];
+  Future<void> loadData()async {
+    final taskProvide = Provider.of<TaskProvider>(context, listen: false);
+    taskProvide.fetchTaskStatusCount();
+
   }
 
   Future<void> _getAllNewTask() async {
@@ -66,7 +54,7 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _getAllTaskCount();
+    loadData();
     _getAllNewTask();
   }
 
@@ -74,47 +62,52 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: TMApp_bar(),
-      body: Column(
-        children: [
-          SizedBox(height: 15),
-          SizedBox(
-            height: 90,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2.0),
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: _taskStatusCountList.length,
-                itemBuilder: (context, index) {
-                  return TaskCount(
-                    title: _taskStatusCountList[index].status,
-                    count: _taskStatusCountList[index].count,
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return SizedBox(width: 1);
-                },
+      body: Consumer<TaskProvider>(
+        builder: (context, taskProvider, child) {
+          return Column(
+            children: [
+              SizedBox(height: 15),
+              SizedBox(
+                height: 90,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2.0),
+                  child: ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: taskProvider.taskStatusCount.length,
+                    itemBuilder: (context, index) {
+                      final counts = taskProvider.taskStatusCount;
+                      return TaskCount(
+                        title: counts[index].status,
+                        count: counts[index].count,
+                      );
+                    },
+                    separatorBuilder: (context, index) {
+                      return SizedBox(width: 1);
+                    },
+                  ),
+                ),
               ),
-            ),
-          ),
-          Expanded(
-            child: ListView.separated(
-              itemCount: _newTaskList.length,
-              itemBuilder: (context, index) {
-                return TaskCard(
-                  taskModel: _newTaskList[index],
-                  cardColor: Colors.blueAccent,
-                  refreshParent: () {
-                    _getAllNewTask();
-                    _getAllTaskCount();
+              Expanded(
+                child: ListView.separated(
+                  itemCount: _newTaskList.length,
+                  itemBuilder: (context, index) {
+                    return TaskCard(
+                      taskModel: _newTaskList[index],
+                      cardColor: Colors.blueAccent,
+                      refreshParent: () {
+                        _getAllNewTask();
+                        loadData();
+                      },
+                    );
                   },
-                );
-              },
-              separatorBuilder: (context, index) {
-                return SizedBox(height: 4);
-              },
-            ),
-          ),
-        ],
+                  separatorBuilder: (context, index) {
+                    return SizedBox(height: 4);
+                  },
+                ),
+              ),
+            ],
+          );
+        }
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {

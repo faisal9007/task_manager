@@ -3,12 +3,16 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
 import 'package:logger/logger.dart';
+import 'package:provider/provider.dart';
+import 'package:task_manager/provider/auth_provider.dart';
 import 'package:task_manager/ui/controller/auth_controller.dart';
 
 import '../../aap.dart';
 
 class ApiCaller {
   static final Logger _logger = Logger();
+  static String ? accessToken;
+
 
   static Future<ApiResponse> getRequest({required String url}) async {
     try {
@@ -16,7 +20,7 @@ class ApiCaller {
       _logRequest(url);
       Response response = await get(
         uri,
-        headers: {'token': AuthController.accessToken ?? ''},
+        headers: {'token': accessToken ?? ''},
       );
       _logResponse(url, response);
       final int statusCode = response.statusCode;
@@ -63,7 +67,7 @@ class ApiCaller {
         headers: {
           "Accept": "application/json",
           "Content-Type": "application/json",
-          'token': AuthController.accessToken ?? '',
+          'token': accessToken ?? '',
         },
         body: body != null ? jsonEncode(body) : null,
       );

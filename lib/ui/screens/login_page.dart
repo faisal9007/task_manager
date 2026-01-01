@@ -152,6 +152,7 @@ class _LoginPageState extends State<LoginPage> {
     final result =await networkProvider.login(email: _emailController.text.trim(), password: _passwordController.text);
     if (result != null ){
       await authProvider.saveUserData(result['user'],(result['token']));
+      ApiCaller.accessToken = result['token'];
       _clearTextField();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
