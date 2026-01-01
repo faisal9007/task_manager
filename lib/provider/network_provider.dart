@@ -44,5 +44,40 @@ class NetworkProvider extends ChangeNotifier {
      return null;
    }
  }
+ Future<Map<String,dynamic>?> register({
+   required String email,
+   required String firstName,
+   required String lastName,
+   required String mobile,
+   required String password,
+
+ }) async {
+   _registrationState = ApiState.loading;
+   _errorMessage = null;
+   notifyListeners();
+
+   Map<String, dynamic> requestBody = {
+     "email": email,
+     "firstName": firstName,
+     "lastName": lastName,
+     "mobile": mobile,
+     "password": password,
+   };
+   final ApiResponse response = await ApiCaller.postRequest(
+     url: Urls.registrationUrls,
+     body: requestBody,
+   );
+   if (response.isSuccess){
+     _registrationState =ApiState.success;
+     notifyListeners();
+     return response.responseData;
+
+   }else{
+     _registrationState = ApiState.error;
+     _errorMessage = response.errorMessage?? 'registration failed';
+     notifyListeners();
+     return null;
+   }
+ }
 
 }
