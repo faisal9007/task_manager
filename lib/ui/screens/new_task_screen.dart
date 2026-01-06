@@ -21,41 +21,24 @@ class NewTaskScreen extends StatefulWidget {
 
 class _NewTaskScreenState extends State<NewTaskScreen> {
 
-  bool _getNewTaskProgress = false;
 
-  List<TaskModel> _newTaskList = [];
   Future<void> loadData()async {
     final taskProvide = Provider.of<TaskProvider>(context, listen: false);
-    taskProvide.fetchTaskStatusCount();
+    Future.wait([
+    taskProvide.fetchTaskStatusCount(),
+    taskProvide.fetchNewTaskByStatus('New'),
+    ]);
+
 
   }
 
-  Future<void> _getAllNewTask() async {
-    _getNewTaskProgress = true;
-    setState(() {});
-    final ApiResponse response = await ApiCaller.getRequest(
-      url: Urls.newTaskUrls,
-    );
-    _getNewTaskProgress = false;
-    setState(() {});
-    List<TaskModel> list = [];
-
-    if (response.isSuccess) {
-      for (Map<String, dynamic> jsonData in response.responseData['data']) {
-        list.add(TaskModel.fromJson(jsonData));
-      }
-    } else {
-      showSnackBarMessage(context, response.errorMessage.toString());
-    }
-    _newTaskList = list;
-  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     loadData();
-    _getAllNewTask();
+
   }
 
   @override
@@ -89,14 +72,15 @@ class _NewTaskScreenState extends State<NewTaskScreen> {
               ),
               Expanded(
                 child: ListView.separated(
-                  itemCount: _newTaskList.length,
+                  itemCount: taskProvider.newTask.length,
+
                   itemBuilder: (context, index) {
+
                     return TaskCard(
-                      taskModel: _newTaskList[index],
+                      taskModel: taskProvider.newTask[index],
                       cardColor: Colors.blueAccent,
-                      refreshParent: () {
-                        _getAllNewTask();
-                        loadData();
+                      refreshParent: () async {
+                        await loadData();
                       },
                     );
                   },

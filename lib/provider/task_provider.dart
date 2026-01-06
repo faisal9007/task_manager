@@ -46,20 +46,49 @@ class TaskProvider extends ChangeNotifier{
     notifyListeners();
 
     }
-  Future<void> fetchNewTaskByStatus() async {
+  Future<void> fetchNewTaskByStatus(String status) async {
     _taskListState = ApiState.loading;
     notifyListeners();
-    final ApiResponse response = await ApiCaller.getRequest(
-        url: Urls.newTaskUrls);
+    String url;
+    switch(status){
+      case ('New'):
+        url = Urls.newTaskUrls;
+        case ('Progress'):
+          url = Urls.progressTaskUrls;
+          case ('Completed'):
+            url = Urls.completedTaskUrls;
+            case ('Cancelled'):
+              url = Urls.cancelledTaskUrls;
+              break;
+              default:
+                url = Urls.newTaskUrls;
+    }
+
+    
+    final ApiResponse response = await
+    ApiCaller.getRequest(url: url);
     if (response.isSuccess){
-      _taskStatusCount = [];
+      List<TaskModel> tasks = [];
       for (Map<String, dynamic> jsonData in response.responseData['data']) {
-        _taskStatusCount.add(TaskStatusCountModel.formJson(jsonData));}
-      _taskCountState = ApiState.success;
+        tasks.add(TaskModel.fromJson(jsonData));}
+      switch(status){
+        case ('New'):
+          _newTask = tasks;
+        case ('Progress'):
+          _progressTask = tasks;
+        case ('Completed'):
+          _completedTask = tasks;
+        case ('Cancelled'):
+          _cancelTask = tasks;
+          break;
+        default:
+          _newTask = tasks;
+      }
+      _taskListState = ApiState.success;
       _errorMessage = null;
     }else {
       _taskCountState = ApiState.error;
-      _errorMessage = response.errorMessage??'Failed to Fetch Task Count';
+      _errorMessage = response.errorMessage??'Failed to Fetch Task ';
     }
     notifyListeners();
 
