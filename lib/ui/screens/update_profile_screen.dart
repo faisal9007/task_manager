@@ -33,16 +33,14 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   XFile? _selectedImage;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    UserModel user = AuthController.userModel!;
-    emailController.text=user.email;
-    firstNameController.text=user.firstName;
-    lastNameController.text=user.lastName;
-    mobileController.text=user.mobile;
-
-
-
+    if (AuthController.userModel != null) {
+      UserModel user = AuthController.userModel!;
+      emailController.text = user.email;
+      firstNameController.text = user.firstName;
+      lastNameController.text = user.lastName;
+      mobileController.text = user.mobile;
+    }
   }
 
   Future<void> _pickImage() async {
@@ -92,6 +90,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     if (value?.trim().isEmpty??true){
                       return'Enter your email';
                     }
+                    return null;
                   },
                 ),
                 SizedBox(
@@ -180,7 +179,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     String? encodedPhoto;
     if(_selectedImage !=null){
       List<int> bytes = await _selectedImage!.readAsBytes();
-      encodedPhoto =jsonEncode(bytes);
+      encodedPhoto =base64Encode(bytes);
       requestBody ['photo'] = encodedPhoto;
     }
     final ApiResponse response = await  ApiCaller.postRequest(url: Urls.updateProfileUrls, body: requestBody);
